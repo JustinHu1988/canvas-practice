@@ -133,6 +133,84 @@ Canvas的context对象提供了两个名叫`save()`和`restore()`的方法，用
 ####键盘事件
 键盘事件触发时，事件发生在当前拥有焦点的HTML元素身上。假如没有元素拥有焦点，那么事件会发生在window和document对象上。
 
+canvas是一个不可获取焦点的元素，因此无法再canvas元素上新增键盘事件监听器。
+
+如果想检测键盘事件，应该在document或window对象上新增键盘事件监听器。
+
+一共三种键盘事件：
+
+    keydown
+    keypress
+    keyup
+
+如果激发keydown事件的那个按键会打印出某个字符，则浏览器会在触发keyup事件之前先产生keypress事件。如果在一段时间内持续按住某个可以打印出字符的键，浏览器就会在keydown和keyup事件之间产生一系列的keypress事件。
+
+####触摸事件
+
+···
+
+
+###绘制表面的保存与恢复
+
+...
+
+
+
+##第2章 绘制
+
+###坐标系统
+Canvas坐标系以左上角为原点，X轴向左，Y轴向下。
+Canvas坐标系并不是固定的，可以对坐标系统进行平移及旋转。变换方式如下：
+
+    平移（translate）
+    旋转（rotate）
+    缩放（scale）
+    创建自定义的变换方式，如切变
+
+###Canvas的绘制模型
+......
+
+###矩形的绘制
+Canvas的API提供了如下三个方法，分别用于矩形的清除、描边及填充：
+
+    clearRect(double x, double y, double w, double h)
+    //默认情况下，剪辑区域是整个canvas
+    strokeRect(double x, double y, double w, double h)
+    //如果宽度和高度有一个为零，会绘制一条线。两者都为零，则不绘制
+    fillRect(double x, double y, double w, double h)
+    //如果宽度或高度为零，不会进行绘制
+
+###颜色与透明度
+
+    storkeStyle
+    fillStyle
+
+###渐变色与图案
+>除了颜色之外，也可以为strokeStyle与fillStyle属性指定渐变色与图案
+
+####渐变色：
+支持线性（linear）渐变与放射（radial）渐变。
+
+#####线性渐变
+context.createLinearGradient();
+传入两个点的x、y坐标，两点之间的连线就是canvas建立颜色渐变效果的依据。
+
+    var canvas = document.getElementById("canvas"),
+        context = canvas.getContext("2d"),
+        gradient = context.createLinearGradient(0,0,canvas.width,0);
+
+    gradient.addColorStop(0,"blue");
+    gradient.addColorStop(0.25,"white");
+    gradient.addColorStop(0.5,"purple");
+    gradient.addColorStop(0.75,"red");
+    gradient.addColorStop(1,"yellow");
+
+    context.fillStyle = gradient;
+    context.fillRect(0,0,canvas.width,canvas.height);
+
+#####放射渐变
+
+要创建放射渐变，需要指定两个圆形。
 
 
 
