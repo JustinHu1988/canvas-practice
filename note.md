@@ -2,7 +2,7 @@
 
 >2016年8月，来仔细研究一下canvas。
 
-##基础知识
+##第1章 基础知识
 Canvas的能力，主要通过它的context对象表现出来。canvas.context：canvas的绘图环境。
 因此，要在JS中操作canvas元素的时候，首先可以用`getElementById()`获取canvas对象，再用`.getContext('2d')`获取canvas对象的绘图环境，然后在绘图环境里进行各种编辑。
 
@@ -35,7 +35,7 @@ canvas实际有两套尺寸。一个是元素本身的大小，一个是元素�
 
 >js代码中，很少会用到canvas元素本身，主要就是获取一下canvas的高宽、或某个数据地址。而canvas的绘图环境对象才是主要的绘图场所，这个对象也提供了强大的API，见下。
 
-###绘图环境
+###1.2 绘图环境
 canvas主要功能就是充当绘图环境对象的容器。而环境对象则提供了全部的绘制功能。
 
 ####2d绘图环境
@@ -63,6 +63,8 @@ CanvasRenderingContext2D对象所含的属性：
 >3d绘图环境——WebGL
 
 ####Canvas状态的保存与恢复
+>save()和restore()
+
 Canvas的context对象提供了两个名叫`save()`和`restore()`的方法，用于保存及恢复当前canvas绘图环境的所有属性。
 
     function drawGrid(strokeStyle, fillstyle){
@@ -158,7 +160,7 @@ canvas是一个不可获取焦点的元素，因此无法再canvas元素上新�
 
 ##第2章 绘制
 
-###坐标系统
+###2.1 坐标系统
 Canvas坐标系以左上角为原点，X轴向左，Y轴向下。
 Canvas坐标系并不是固定的，可以对坐标系统进行平移及旋转。变换方式如下：
 
@@ -167,10 +169,12 @@ Canvas坐标系并不是固定的，可以对坐标系统进行平移及旋转�
     缩放（scale）
     创建自定义的变换方式，如切变
 
-###Canvas的绘制模型
+###2.2 Canvas的绘制模型
 ......
 
-###矩形的绘制
+###2.3 矩形的绘制
+>fillRect()、strokeRect()、clearRect()
+
 Canvas的API提供了如下三个方法，分别用于矩形的清除、描边及填充：
 
     clearRect(double x, double y, double w, double h)
@@ -180,20 +184,22 @@ Canvas的API提供了如下三个方法，分别用于矩形的清除、描边�
     fillRect(double x, double y, double w, double h)
     //如果宽度或高度为零，不会进行绘制
 
-###颜色与透明度
 
-    storkeStyle
-    fillStyle
+###2.4 颜色与透明度
+>从这里到图案填充，均使用storkeStyle()和fillStyle()完成样式设定
 
-###渐变色与图案
->除了颜色之外，也可以为strokeStyle与fillStyle属性指定渐变色与图案
+如果只设置颜色和透明度的填充样式，可以直接将颜色信息传入storkeStyle()、fillStyle()方法中。
+若想填充渐变色或者图案，则需要先用相应方法设置渐变色和图案信息，再将设置好的实例传入storkeStyle()、fillStyle()方法中。
 
+###2.5 渐变色与图案
 ####渐变色：
 支持线性（linear）渐变与放射（radial）渐变。
 
 #####线性渐变
-context.createLinearGradient();
-传入两个点的x、y坐标，两点之间的连线就是canvas建立颜色渐变效果的依据。
+>context.createLinearGradient();
+
+createLinearGradient()，传入两个点的x、y坐标，两点之间的连线就是canvas建立颜色渐变效果的依据。
+>该方法返回一个CanvasGradient实例。可以通过addColorStop()方法向该渐变色增加颜色停止点。
 
     var canvas = document.getElementById("canvas"),
         context = canvas.getContext("2d"),
@@ -209,12 +215,143 @@ context.createLinearGradient();
     context.fillRect(0,0,canvas.width,canvas.height);
 
 #####放射渐变
+>createRadialGradient()，返回一个CanvasGradient实例，可以通过addColorStop()方法向该渐变色增加颜色停止点。
 
-要创建放射渐变，需要指定两个圆形。
+createRadialGradient()方法，要创建放射渐变，需要指定两个圆形（圆心坐标和半径）。
+
+    var canvas = document.getElementById("canvas"),
+        context = canvas.getContext("2d"),
+        gradient = context.createRadialGradient(
+                            canvas.width/2, canvas.height, 10,
+                            canvas.width/2, 0, 100);
+
+    gradient.addColorStop(0, "blue");
+    gradient.addColorStop(0.25, "white");
+    gradient.addColorStop(0.5, "purple");
+    gradient.addColorStop(0.75, "red");
+    gradient.addColorStop(1, "yellow");
+
+    context.fillStyle = gradient;
+    context.fillRect(0,0,canvas.width,canvas.height);
+
+####图案
+>createPattern()
+
+除了颜色和渐变色，canvas元素也允许使用图案来对图形和文本进行描边和填充。
+图案可以是以下三种之一：
+
+    image元素
+    canvas元素
+    video元素
+
+createPattern()方法创建图案。接受两个参数：图案本身、一个字符串（告知浏览器如何重复图案）。
+
+    第一个参数指定了图案所用的图像元素
+    第二个参数取值：repeat、repeat-x、repeat-y、no-repeat。
+
+>具体实例请见test02
+注意，每次用户点击单选按钮时，应用程序代码都会调用createPattern()来创建一个新的对象。
+为什么要这么写？因为CanvasPattern对象是JavaScript语言中的所谓“不透明对象”（opaque object），没有提供用于操作其内容的属性及方法。
 
 
 
 
+###2.6 阴影
+在canvas中进行绘制时，不论要画的是图形、文本还是图像，都可以通过修改绘图环境的下述四个属性来指定阴影效果：
+
+    shadowColor：CSS3格式的颜色
+    shadowOffsetX：从图形或文本到阴影的水平像素偏移
+    shadowOffsetY：从图形或文本到阴影的垂直像素偏移
+    shadowBlur：该值被用于高斯模糊方程，以便对阴影进行模糊化处理。
+
+    若想出现阴影效果：
+        指定的shadowColor值不是全透明的。
+        其余阴影属性中存在非0值。
+
+设置完阴影效果后，绘制时会自动附带阴影。可以考虑用save()和restore()来灵活使用不同阴影效果。
+
+>内嵌阴影：若给shadowOffsetX()与shadowOffsetY()设置负值，可以制作内嵌阴影。
+
+>注：阴影效果的绘制可能很耗时
+>>为了绘制阴影，浏览器需要将阴影先渲染到一个辅助的位图之中，最后这个辅助位图中的内容会与屏幕上的canvas之中的内容进行图像合成。因此相对耗时。
+>>绘制简单图形时，这种影响不太明显；但如果对动画对象运用阴影效果的话，性能肯定比不用阴影效果时要差一些。详见5.11
 
 
+###2.7 路径、描边与填充
+>大多数绘制系统，都是基于路径的。
+>>前面讲述的strokeRect()和fillRect()，是canvas绘图环境中唯二可以用来立即绘制图形的方法（还有fillText()和strokeText()是用来立即绘制文字）。
+
+路径分为封闭路径（closed path）和开放路径（open path）。
+
+>不论路径是开放或封闭，都可以进行填充。当填充某个开放路径，浏览器会把它当成封闭路径来填充。
+
+绘制路径基本过程
+
+    //开始一段新路径
+    context.beginPath();
+
+    //绘制矩形路径或弧形路径（可画多条）
+    context.rect(80,150,100,100);
+    context.arc(150,550,60,0,Math.PI*3/2);
+
+    //给路径描边或填充
+    context.fill();
+    context.stroke();
+
+>给同一路径进行填充和描边不冲突，可先后调用。
+
+**CanvasRenderingContext2D中与路径有关的方法**
+
+    beginPath()
+    closePath()
+    arc()
+    rect()
+    fill()
+    stroke()
+
+####2.7.1 路径和子路径
+
+在某一时刻，canvas之中只能有一条路径存在，称为当前路径（current path）。这条路径可以包含多条子路径（subpath）。
+当使用beginPath()方法时，我们将会清除原来的所有子路径，开始一段新路径。
+
+>注：如果没有再次调用`beginPath()`，那么上次调用`beginPath()`后绘制的子路径全部存在，继续绘制时会在此基础上增加子路径，调用`storke()`或者`fill()`将会应用在所有子路径上（此前已经应用过storke()和fill()的子路径会进行重绘）。实例详见《canvas核心技术》P63
+
+**填充路径规则：非零环绕规则**
+如果当前路径是循环的，或是包含多个相交的子路径，Canvas的绘图环境变量就需要判断，调用`fill()`方法时，应当如何对路径进行填充。
+
+Canvas中使用的是“非零环绕规则”（nonzero winding rule）。
+
+对于路径中任意给定区域，从该区域内部画一条射线至路径外部。将计数器初始化为0，然后每当这个射线与路径上的直线或曲线相交时，改变计数器的值（按照交叉时路径相对于射线的方向，设定一个正向，然后正向交叉时计数器+1，反向交叉时-1），如果计数器的最终值不是0，那么此区域就在路径内部，反之在外部。
+
+
+####2.7.2 剪纸效果
+
+运用前面学到的路径、阴影以及非零环绕规则，我们可以实现“剪纸效果”（cutout）。
+
+    例见：test03
+
+>根据Canvas规范，当使用arc()方法向当前路径中增加子路径时，该方法必须将上一条子路径的终点与所画圆弧的起点相连。
+
+arc()方法可以让调用者控制圆弧的绘制方向，不过rect()方法总是按照顺时针方向来创建路径，如果我们需要一条逆时针的矩形路径，需要自己创建一个rect()方法：
+
+    function rect(x,y,w,h,direction){
+        if(direction){
+            context.moveTo(x,y);
+            context.lineTo(x,y+h);
+            context.lineTo(x+w,y+h);
+            context.lineTo(x,y+h);
+        } else {
+            context.moveTo(x,y);
+            context.lineTo(x+w,y);
+            context.lineTo(x+w,y+h);
+            context.lineTo(x,y+h);
+        }
+        context.closePath();
+    }
+
+>
+
+
+###2.8 线段
+Canvas绘图环境提供了两个可以用来创建线性路径的方法：moveTo()与lineTo()。
 
