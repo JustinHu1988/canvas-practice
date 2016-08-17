@@ -355,3 +355,54 @@ arc()方法可以让调用者控制圆弧的绘制方向，不过rect()方法总
 ###2.8 线段
 Canvas绘图环境提供了两个可以用来创建线性路径的方法：moveTo()与lineTo()。
 
+>moveTo()：向当前路径中增加一个子路径，该子路径只包含一个点。
+>lineTo()：如果当前路径没有子路径，执行和moveTo()一样的功能；如果有子路径，则将指定的点加入子路径。
+
+例：
+
+    var context=document.getElementById("canvas").getContext("2d");
+
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(50,10);
+    context.lineTo(450,10);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(50.5,50.5);
+    context.lineTo(450.5,50.5);
+    context.stroke();
+    //注意：第一条线宽度是两像素宽，原因见2.8.1。
+
+####2.8.1 线段与像素边界
+如果你在某2个像素的边界处绘制一条1像素宽的线段，那么该线段实际会占据两个像素的宽度。
+
+####2.8.2 网格的绘制
+绘制网格示例：
+
+    var context = document.getElementById("canvas").getContext("2d");
+
+    //Functions......
+    function drawGrid(context,color,stepx,stepy){
+        context.strokeStyle = color;
+        context.lineWidth = 0.5;
+
+        for(var i=stepx+0.5; i<context.canvas.width; i+=stepx){
+            context.beginPath();
+            context.moveTo(i,0);
+            context.lineTo(i, context.canvas.height);
+            context.stroke();
+        }
+        for(var i=stepy+0.5; i<context.canvas.height; i+=stepy){
+            context.beginPath();
+            context.moveTo(0,i);
+            context.lineTo(context.canvas.width, i);
+            context.stroke();
+        }
+    }
+    //Initialization......
+    drawGrid(context, 'lightgray', 10, 10);
+
+
+这段JavaScript代码将线段绘制在了某一个像素的中线上，并且绘制的只有0.5像素宽。（所有浏览器的Canvas实现都使用了“抗锯齿”技术，可以创建出“亚像素”线段的绘制效果）
+
+
