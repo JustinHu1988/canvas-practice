@@ -23,17 +23,20 @@
 
 
 	<script type="text/javascript">
-		 var context=document.getElementById("canvas").getContext("2d");
+		var canvas = document.getElementById("canvas"),
+			context = canvas.getContext("2d");
+		context.save();
+		context.shadowColor = "#f20";
+		context.shadowBlur = 4;
+		context.fillRect(10,10,100,100);
+		context.restore();
+		context.fillRect(200,200,100,100);
 
-    context.lineWidth = 1;
-    context.beginPath();
-    context.moveTo(50,10);
-    context.lineTo(450,10);
-    context.stroke();
-    context.beginPath();
-    context.moveTo(50.5,50.5);
-    context.lineTo(450.5,50.5);
-    context.stroke();
+		context.beginPath();
+		context.rect(250,350,100,100);
+		context.arc(150,550,60,0,Math.PI*3/2);
+		context.stroke();
+		context.fill();
 	</script>
 </body>
 </html>
