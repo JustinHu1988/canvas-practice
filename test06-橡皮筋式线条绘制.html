@@ -166,6 +166,13 @@
 	 	}
 	 };
 
+	 canvas.onmouseup = function(e){
+	 	loc = windowToCanvas(e.clientX, e.clientY);
+	 	restoreDrawingSurface();
+	 	updateRubberband(loc);
+	 	dragging = false;
+	 }
+
 	 //Controls event handlers
 	 eraseAllButton.onclick = function(e){
 	 	context.clearRect(0,0,canvas.width,canvas.height);
