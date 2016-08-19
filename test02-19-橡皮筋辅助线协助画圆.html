@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>A Simple Canvas Example</title>
+	<style type="text/css">
+		body{
+			background:#dddddd;
+		}
+		#controls{
+			position:absolute;
+			left:25px;
+			top:25px;
+		}
+		#canvas{
+			margin:10px;
+			background:#fff;
+			width:1000px;
+			height:800px;
+			-webkit-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			-moz-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="1000" height="800">
+		Canvas not supported
+	</canvas>
+
+
+
+	<script type="text/javascript">
+	var canvas = document.getElementById("canvas"),
+		context = canvas.getContext("2d"),
+		//拖动判定变量
+		dragActive = false,
+		//拖动初始坐标变量
+		mousedown = {};
+
+	//函数：
+	//坐标转换(这个方法仅适用于padding和border为0的canvas)：
+	function windowToCanvas(x,y){
+		var bbox = canvas.getBoundingClientRect();
+		return {x: x-bbox.left*(canvas.width/bbox.width),
+			y: y-bbox.top * (canvas.height/bbox.height)}
+	}
+	//存储当前画布图像：
+	function saveDrawingSurface(){
+		drawingSurfaceImageData = context.getImageData(0,0,canvas.width,canvas.height);
+	}
+
+	//Canvas event handlers
+	context.onmousedown = function(e){
+		//获取当前坐标
+		var loc = windowToCanvas(e.clientX, e.clientY);
+		//存储当前坐标
+		mousedown.x = loc.x;
+		mousedown.y = loc.y;
+		//拖动判定变量赋值
+		dragActive = true;
+		//组止焦点转变
+		e.preventDefault();
+		//存储当前画布
+		saveDrawingSurface();
+	}
+	context.onmousemove = function(e){
+		if (dragActive) {}
+	}
+
+
+
+
+
+	
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>A Simple Canvas Example</title>
+	<style type="text/css">
+		body{
+			background:#dddddd;
+		}
+		#controls{
+			position:absolute;
+			left:25px;
+			top:25px;
+		}
+		#canvas{
+			margin:10px;
+			background:#fff;
+			width:1000px;
+			height:800px;
+			-webkit-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			-moz-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="1000" height="800">
+		Canvas not supported
+	</canvas>
+
+
+
+	<script type="text/javascript">
+	var canvas = document.getElementById("canvas"),
+		context = canvas.getContext("2d"),
+		//存储原有的moveTo()函数
+		moveToFunction = CanvasRenderingContext2D.prototype.moveTo;
+		CanvasRenderingContext2D.prototype.lastMoveToLocation = {};
+
+
+	//重新定义moveTo()方法
+	CanvasRenderingContext2D.prototype.moveTo = function(x,y){
+		//应用原来的moveTo()函数，设定作用域
+		moveToFunction.apply(context, [x,y]);
+		this.lastMoveToLocation.x = x;
+		this.lastMoveToLocation.y = y;
+	};
+
+	CanvasRenderingContext2D.prototype.dashedLineTo = function(x,y,dashLength){
+		dashLength = dashLength === undefined ? 5 : dashLength;
+
+		var startX = this.lastMoveToLocation.x;
+		var startY = this.lastMoveToLocation.y;
+
+		var deltaX = x - startX;
+		var deltaY = y - startY;
+		var numDashes = Math.floor(Math.sqrt(deltaX*deltaX + deltaY*deltaY)/ dashLength);
+
+		for(var i=0; i<numDashes; ++i){
+			this[i%2 === 0?"moveTo" : "lineTo"](startX + (deltaX/numDashes)*i, startY + (deltaY/numDashes)*i);
+		}
+
+		this.moveTo(x,y);
+	};
+
+	// 按照上述方法修改CanvasRenderingContext2D对象之后，可以按下方方式画虚线：
+
+	context.lineWidth = 3;
+	context.strokeStyle = "blue";
+
+	context.moveTo(20, 20);
+	context.dashedLineTo(context.canvas.width - 20, 20);
+	context.dashedLineTo(context.canvas.width - 20, context.canvas.height -20);
+
+	context.dashedLineTo(20, context.canvas.height-20);
+	context.dashedLineTo(20, 20);
+	context.dashedLineTo(context.canvas.width-20, context.canvas.height -20);
+	context.stroke();
+
+
+
+
+	
+
+	</script>
+</body>
+</html>
