@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>A Simple Canvas Example</title>
+	<style type="text/css">
+		body{
+			background:#dddddd;
+		}
+		#controls{
+			position:absolute;
+			left:25px;
+			top:25px;
+		}
+		#canvas{
+			margin:10px;
+			background:#fff;
+			width:1000px;
+			height:800px;
+			-webkit-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			-moz-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="1000" height="800">
+		Canvas not supported
+	</canvas>
+
+http://pic3.qiyipic.com/bigbang201608/20160822/huojiang03-h5.jpg
+http://pic3.qiyipic.com/bigbang201608/20160822/huojiang03-pc.jpg
+
+<script type="text/javascript">
+	var canvas = document.getElementById("canvas"),
+		context = canvas.getContext("2d"),
+
+		sidesSelect = document.getElementById("sidesSelect"),
+		startAngleSelect = document.getElementById("startAngleSelect"),
+
+		fillCheckbox = document.getElementById("fillCheckbox"),
+
+		mousedown = {},
+		rubberbandRect = {},
+
+		Point = function(x,y){
+			this.x = x;
+			this.y = y;
+		};
+
+	//Functions ......
+	function getPolygonPoints(centerX, centerY, radius, sides, startAngle){
+		var points = [],
+			angle = startAngle || 0;
+
+		for(var i = 0; i<sides; ++i){
+			points.push(new Point(centerX + radius * Math.sin(angle),
+						centerY - radius * Math.cos(angle)));
+			angle += 2*Math.PI/sides;
+		}
+		return points;
+	}
+
+	function createPolygonPath(centerX, centerY, radius, sides, startAngle){
+		var points = getPolygonPoints(centerX, centerY, radius, sides, startAngle);
+
+		context.beginPath();
+		context.moveTo(points[0].x, points[0].y);
+
+		for (var i = 1; i < sides; ++i) {
+			context.lineTo(points[i].x, point[i].y);
+		}
+		context.closePath();
+	}
+
+	function drawRubberbandShape(loc, sides, startAngle){
+		createPolygonPath(mousedown.x, mousedown.y, rubberbandRect.width, parseInt(sideSelect.value), (Math.PI/180) * parseInt(startAngleSelect.value));
+		context.stroke();
+
+		if (fillCheckbox.checked){
+			context.fill();
+		}
+	}
+
+	
+</script>
+</html>

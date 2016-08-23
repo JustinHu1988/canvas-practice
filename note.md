@@ -481,3 +481,20 @@ arc()方法所绘制的可能不止是圆弧，如果此前存在子路径，浏
 让用户以拖动鼠标的方式画圆：
 >例2-19 橡皮筋辅助线辅助画圆
 
+###2.10 贝塞尔曲线
+####2.10.1 二次方贝塞尔曲线
+>quadraticCurveTo(double cpx, double cpx, double x, double y);
+
+####2.10.2 三次方贝塞尔曲线
+>bezierCurveTo(double cpx, double cpy, double cp2x, double cp2x, double x, double y);
+
+
+###2.11 多边形的绘制
+多边形绘制示例： example02-25
+
+**多边形对象**
+立即模式绘图系统会立即将绘制的内容体现在canvas上，然后立刻忘掉刚才所画的东西。
+如果想实现让用户创建并操作绘图对象的画图应用程序，立即模式绘图有些不足。
+我们需要将可以编辑并绘制的那些图形对象保存到一份列表当中。
+
+>example02-26
