@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>A Simple Canvas Example</title>
+	<style type="text/css">
+		body{
+			background:#dddddd;
+		}
+		#controls{
+			    position: absolute;
+    left: 25px;
+    top: 14px;
+    height: 41px;
+    width: 300px;
+    background: rgba(255, 255, 255,0.6);
+    border-radius: 20px;
+    border: #fff solid 2px;
+    text-align: center;
+		}
+		#scaleOutput{
+			height: 41px;
+			display: inline-block;
+			position: absolute;
+			top: 0px;
+			line-height: 41px;
+			right: 217px;
+		}
+		#scaleSlider{
+			height: 37px;
+		}
+		#canvas{
+			margin:60px 10px 0px;
+			background:#fff;
+			width:1000px;
+			height:800px;
+			-webkit-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			-moz-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+		}
+	</style>
+</head>
+<body>
+	<div id="controls">
+		<output id="scaleOutput">1.0</output>
+		<input type="range" id="scaleSlider" min="1" max="3.0" step="0.01" value="1.0" />
+	</div>
+	<canvas id="canvas" width="800" height="600">
+		Canvas not supported
+	</canvas>
+
+
+
+	<script type="text/javascript">
+		var canvas = document.getElementById("canvas"),
+			context = canvas.getContext("2d"),
+			image01 = new Image(),
+
+			scaleSlider = document.getElementById("scaleSlider"),
+			scaleOutput = document.getElementById("scaleOutput"),
+			scale = 1.0,
+			MINIMUM_SCALE = 1.0,
+			MAXIMUM_SCALE = 3.0;
+
+		function drawImage(){
+			var w = canvas.width;
+			h = canvas.height;
+			sw = w*scale;
+			sh = w*scale;
+
+			context.clearRect(0,0,canvas.width,canvas.height);
+			context.drawImage(image01, -sw/2 + w/2, -sh/2 + h/2, sw, sh);
+		}
+
+		function drawScaleText(value){
+			var text = parseFloat(value).toFixed(2);
+			var percent = parseFloat(value - MINIMUM_SCALE) / parseFloat(MAXIMUM_SCALE - MINIMUM_SCALE);
+
+			scaleOutput.innerText = text;
+			percent = percent < 0.35 ? 0.35 : percent;
+			scaleOutput.style.fontSize = percent*MAXIMUM_SCALE/1.5 + "em";
+		}
+
+		scaleSlider.onchange = function(e){
+			scale = e.target.value;
+
+			drawScaleText(scale);
+			drawImage();
+		}
+
+		//Initialization
+
+		context.fillStyle = "cornflowerblue";
+		context.strokeStyle = "yellow";
+		context.shadowColor = "rgba(50,50,50,1.0)";
+		context.shadowOffsetX = 5;
+		context.shadowOffsetY = 5;
+		context.shadowBlur = 10;
+
+		image01.src = "images/dragonball01.jpg";
+
+		image01.onload = function(e){
+			drawImage();
+			drawScaleText(scaleSlider.value);
+		}
+
+	</script>
+</body>
+</html>

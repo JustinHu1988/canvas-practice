@@ -505,3 +505,43 @@ arc()方法所绘制的可能不止是圆弧，如果此前存在子路径，浏
 #图像与视频
 
 >Canvas绘图环境对象提供了4个绘制及操作图像的方法：
+
+    drawImage()
+    getImageData()
+    putImageData()
+    createImageData()
+
+##4.1 图像绘制
+
+`drawImage()`方法的使用很灵活：可以将图像、canvas对象或视频帧的整体或某一部分会知道canvas中，可任意指定其绘制位置及缩放比例。
+三种传递参数的方式：
+    
+    drawImageData(image, dx, dy) //获取整张图像，指定绘制位置，不缩放
+    drawImageData(image, dx, dy, dw, dh)    //获取整张图像，指定绘制位置，按dw和dh对图像进行缩放
+    drawImageData(image, sx, sy, sw, sh, dx, dy, dw, dh)    //获取局部图像，指定绘制位置，按dw和dh对获取的局部图像进行缩放
+    //  image：源图像对象
+        sx,sy：从源图像中获取图像信息的起始坐标（默认为0,0）
+        sw,sh：从源图像中获取的图像信息宽与高
+        dx,dy：在canvas上填充图像的起始位置
+        dw,dh：填充在canvas的图像实际大小（源图像会根据高宽缩放）
+
+绘制图像实例：example04-01
+
+>注：图像未加载完之前不能进行绘制，否则会失败。
+
+>注：drawImage()方法在绘制图像时不会考虑当前路径，但它会将globalAlpha设置、阴影效果、剪辑区域以及全集图像合成操作符等属性运用到图像绘制中。
+
+>关于指示加载进度的滚动条，详见9.1.2
+
+##4.2 图像缩放
+
+实例：example04-05
+
+>可以在canvas范围外绘制图像，这个在需要背景图片滚动效果时很有用。
+
+>进行页面渲染时，不应首先考虑Canvas元素。
+>>如上例中，既然output元素比使用canvas元素更适合表示放大比例的数值，就应该用output元素，而不是用canvas渲染。
+
+##4.3 将一个Canvas绘制到另一个Canvas之中
+
+
