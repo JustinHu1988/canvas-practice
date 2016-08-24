@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>A Simple Canvas Example</title>
+	<style type="text/css">
+		body{
+			background:#dddddd;
+		}
+		#controls{
+			position:absolute;
+			left:25px;
+			top:25px;
+		}
+		#canvas{
+			margin:10px;
+			background:#fff;
+			width:1000px;
+			height:800px;
+			-webkit-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			-moz-box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+			box-shadow:4px 4px 8px rgba(0,0,0,0.5);
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="1000" height="800">
+		Canvas not supported
+	</canvas>
+
+
+
+	<script type="text/javascript">
+	var canvas = document.getElementById("canvas"),
+		context = canvas.getContext("2d"),
+		image = new Image();
+	image.src = "images/dragonball01.jpg";
+	image.onload = function(e){
+		context.drawImage(image, 10, 100, 800, 500);
+	};
+
+	
+
+	</script>
+</body>
+</html>
