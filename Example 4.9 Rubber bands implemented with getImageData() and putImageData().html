@@ -149,8 +149,8 @@
 			var loc = windowToCanvas(canvas, e.clientX, e.clientY);
 			e.preventDefault();
 			rubberbandStart(loc.x, loc.y);
-			rubberbandRectangle.width =null;
-			rubberbandRectangle.height =null;
+			rubberbandRectangle.width =0;
+			rubberbandRectangle.height =0;
 		};
 		canvas.onmousemove = function(e){
 			var loc;
