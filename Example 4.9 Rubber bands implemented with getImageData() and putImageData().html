@@ -127,12 +127,15 @@
 
 		function rubberbandEnd(){
 			//Draw and scale image to the onscreen canvas.
-			context.drawImage(canvas,
-				rubberbandRectangle.left + context.lineWidth*2,
-				rubberbandRectangle.top + context.lineWidth*2,
-				rubberbandRectangle.width - 4*context.lineWidth,
-				rubberbandRectangle.height - 4*context.lineWidth,
-				0, 0, canvas.width, canvas.height);
+			if (rubberbandRectangle.width > 2*context.lineWidth &&
+				rubberbandRectangle.height > 2*context.lineWidth) {
+				context.drawImage(canvas,
+					rubberbandRectangle.left + context.lineWidth*2,
+					rubberbandRectangle.top + context.lineWidth*2,
+					rubberbandRectangle.width - 4*context.lineWidth,
+					rubberbandRectangle.height - 4*context.lineWidth,
+					0, 0, canvas.width, canvas.height);
+			}
 
 			dragging = false;
 			imageData = undefined;
