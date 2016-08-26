@@ -607,3 +607,17 @@ Let's start with a common use case, selecting a region of a canvas with a rubber
 
 >Example 4.9 Rubber bands implemented with **getImageData()** and **putImageData()**
 
+
+####4.5.1.1 ImageData Objects
+
+ImageData objects returned from `getImageData()` have the following three properties:
+1. width: the width of the image data, in device pixels
+2. height: the height of the image data, also in device pixels
+3. data: an array of values representing device pixels
+
+The width and height properties are both read-only unsigned longs. The data attribute is an array of 8-bit integer values representing color components for each device pixel in the image data.
+
+>NOTE: Device pixels vs. CSS pixels
+>>For higher image fidelity, browsers may use multiple device pixels for each CSS pixel.  You can find out how many device pixels you have with the ImageData object's width and height properties.
+
+####4.5.1.2 Image Data Partial Rendering: putImageData's Dirty Rectangle
