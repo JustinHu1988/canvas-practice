@@ -57,19 +57,27 @@
 
 			scaleSlider = document.getElementById("scaleSlider"),
 			scaleOutput = document.getElementById("scaleOutput"),
-			//scale = scaleSlider.value,
-			scale = 1.0,
+			scale = scaleSlider.value || 1.0,
 			MINIMUM_SCALE = 1.0,
 			MAXIMUM_SCALE = 3.0;
 
 		function drawScaled(){
-			var w = canvas.width;
-			h = canvas.height;
-			sw = w*scale;
-			sh = w*scale;
+			var w = canvas.width,
+			h = canvas.height,
+			sw = w*scale,
+			sh = h*scale;
 
+			//Clear the canvas, and draw the image scaled to canvas size
 			context.clearRect(0,0,canvas.width,canvas.height);
-			context.drawImage(image01, -sw/2 + w/2, -sh/2 + h/2, sw, sh);
+			context.drawImage(image01, 0, 0, canvas.width, canvas.height);
+
+			//Draw the watermark on top of the image
+			drawWatermark();
+
+			//Finally, draw the canvas scaled according to the current
+			//scale, back into itself. Note that the source and
+			//destination canvases are the same canvas.
+			context.drawImage(canvas, 0, 0, canvas.width,canvas.height, -sw/2 + w/2, -sh/2 + h/2, sw, sh);
 		}
 
 		function drawScaleText(value){
@@ -81,11 +89,37 @@
 			scaleOutput.style.fontSize = percent*MAXIMUM_SCALE/1.5 + "em";
 		}
 
+		function drawWatermark(){
+			var lineOne = "Copyright",
+				lineTwo = "Acme Inc.",
+				textMetrics,
+				FONT_HEIGHT = 128;
+
+			context.save();
+			context.font = FONT_HEIGHT + "px Arial";
+
+			textMetrics = context.measureText(lineOne);
+
+			context.globalAlpha = 0.6;
+			context.translate(canvas.width/2, canvas.height/2-FONT_HEIGHT);
+
+			context.fillText(lineOne, -textMetrics.width/2, 0);
+			context.strokeText(lineOne, -textMetrics.width/2, 0);
+
+			textMetrics = context.measureText(lineTwo);
+			context.fillText(lineTwo,-textMetrics.width/2, FONT_HEIGHT);
+			context.strokeText(lineTwo,-textMetrics.width/2, FONT_HEIGHT);
+
+			context.restore();
+		}
+
+		//Event handlers
+
 		scaleSlider.onchange = function(e){
 			scale = e.target.value;
 
+			drawScaled();
 			drawScaleText(scale);
-			drawImage();
 		}
 
 		//Initialization
@@ -100,8 +134,9 @@
 		image01.src = "images/dragonball01.jpg";
 
 		image01.onload = function(e){
-			drawImage();
-			drawScaleText(scaleSlider.value);
+			context.drawImage(image01,0,0,canvas.width, canvas.height);
+			drawWatermark();
+			drawScaleText(scale);
 		}
 
 	</script>

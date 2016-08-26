@@ -542,6 +542,68 @@ arc()方法所绘制的可能不止是圆弧，如果此前存在子路径，浏
 >进行页面渲染时，不应首先考虑Canvas元素。
 >>如上例中，既然output元素比使用canvas元素更适合表示放大比例的数值，就应该用output元素，而不是用canvas渲染。
 
-##4.3 将一个Canvas绘制到另一个Canvas之中
+##4.3 Drawing a Canvas into a Canvas
 
+`drawImage()` can draw a canvas back into itself:
+
+    var canvas = document.getElementById("canvas"),
+    context = canvas.getContext("2d"),
+    scaleWidth = ..., //Calculate scales for width and height
+    scaleHeight = ...;
+    ...
+    context.drawImage(canvas, 0, 0, scaleWidth, scaleHeight);
+    ...
+
+In this code, it draws a canvas into itself, scaling the canvas along the way. When the user changes the scale, the application clears the canvas and draws the image, scaled to canvas width and height, into the canvas. Then it draws the watermark on the top of the image.
+
+However, the user never sees the canvas in that state, because the application immediately draws the canvas back into itself, scaled at the scale specified by the users. That has the effect of scaling not only the image, but also the watermark along with it.
+
+Although it's convenient in this case to draw the canvas back into itself, it's not very efficient. Every time the user modifies the scale, the application draws the image and the watermark, and then subsequently redraws the entire canvas, scaled. That means the application ends up drawing everything twice every time the scale changes: See Example 04.06
+
+>TIP: You can draw a canvas into itself, but beware that it's not very efficient, because the browser creates an intermediate offscreen canvas to scale the canvas.
+
+##4.4 Offscreen Canvases
+offscreen canvases, which are often used as temporary holding places for images, are useful in many different scenarios.
+
+Using an offscreen canvas typically involves four steps:
+1. Create the offscreen canvas element.
+2. Set the offscreen canvas's width and height.
+3. Draw into the offscreen canvas.
+4. Copy all, or part of, the offscreen canvas onscreen.
+
+A recipe for offscreen canvases:
+
+    var canvas = document.getElementById("canvas"),
+        context = canvas.getContext("2d"),
+        offscreenCanvas = document.createElement("canvas"),
+        offscreenContext = offscreenCanvas.getContext("2d"),
+        ...
+        //Set the offscreen canvas's size to match the onscreen canvas
+        offscreenCanvas.width = canvas.width;
+        offscreenCanvas.height = canvas.height;
+        ...
+        //Draw into the offscreen context
+        offscreenContext.drawImage(anImage, 0, 0);
+        ...
+        //Draw the offscreen context into the onscreen canvas
+        context.drawImage(offscreenCanvas, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
+
+Code like `var offscreenCanvas = document.createElement("canvas");` create a new canvas that is not attached to any DOM element and therefore will not be visible; thus the term offscreen.
+
+By default, the offscreen canvas's size will be the default size for canvases. Usually, those dimensions will not suffice for your particular use case, so you will need to resize the canvas.
+
+After you have created an offscreen canvas and set its size, you typically draw into the offscreen canvas and subsequently draw some, or all, of the offscreen canvas onscreen.
+
+>Example 4.8 Using an offscreen canvas
+
+>TIP: Increase performance with offscreen canvases
+>>Notice how much more efficient the drawScaled() method is in Example 4.8 than in Example 4.6. The example listed in Example 4.8 draws from the offscreen canvas. The application listed in Example 4.6, on the other hand, had to clear the canvas, draw the image, draw the watermark, and finally, copy the canvas into itself.
+
+##4.5 Manipulating Images
+The `getImageData()` and `putImageData()` methods let you access the pixels of an image and insert pixels into an image, respectively. In the meantime, if you wish, you can modify those pixels, so those two methods let you perform just about any image manipulation you can imagine.
+
+###4.5.1 Accessing Image Data
+Let's start with a common use case, selecting a region of a canvas with a rubber band:
+
+>Example 4.9 Rubber bands implemented with **getImageData()** and **putImageData()**
 
