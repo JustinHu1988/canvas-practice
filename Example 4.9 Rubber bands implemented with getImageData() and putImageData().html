@@ -65,6 +65,7 @@
 		//Functions
 		function windowToCanvas(canvas, x, y){
 			var canvasRectangle = canvas.getBoundingClientRect();
+			console.log(canvasRectangle);
 			return {x: x - canvasRectangle.left,
 				y: y - canvasRectangle.top};
 		}
