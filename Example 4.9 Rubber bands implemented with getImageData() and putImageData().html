@@ -65,8 +65,8 @@
 		//Functions
 		function windowToCanvas(canvas, x, y){
 			var canvasRectangle = canvas.getBoundingClientRect();
-			return {x: x- canvasRectangle.left,
-				y: y- canvasRectangle.top};
+			return {x: x - canvasRectangle.left,
+				y: y - canvasRectangle.top};
 		}
 
 		function captureRubberbandPixels(){
@@ -105,6 +105,7 @@
 
 			rubberbandRectangle.left = mousedown.x;
 			rubberbandRectangle.top = mousedown.y;
+			console.log(x);
 
 			dragging = true;
 		}
