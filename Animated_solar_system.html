@@ -1,0 +1,66 @@
+<!doctype>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="300" height="300"></canvas>
+<script>
+    var sun = new Image(),
+            earth = new Image(),
+            moon = new Image(),
+            canvasFirst = document.getElementById("myCanvas"),
+            ctx = canvasFirst.getContext('2d'),
+            cWidth = canvasFirst.width,
+            cHeight = canvasFirst.height;
+    function init(){
+        sun.src = "https://mdn.mozillademos.org/files/1456/Canvas_sun.png";
+        earth.src = "https://mdn.mozillademos.org/files/1429/Canvas_earth.png";
+        moon.src = "https://mdn.mozillademos.org/files/1443/Canvas_moon.png";
+        window.requestAnimationFrame(draw);
+    }
+
+    function draw(){
+        ctx.clearRect(0,0,cWidth,cHeight);
+
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+        ctx.save();
+
+        ctx.drawImage(sun, 0, 0, cWidth,cHeight);
+
+        ctx.translate(cWidth/2, cHeight/2);
+        ctx.beginPath();
+        ctx.arc(0,0, 110, 0, Math.PI*2, false);
+        ctx.stroke();
+
+        ctx.save();
+        var time = new Date();
+        ctx.rotate(((Math.PI*2)/60)*time.getSeconds() + ((Math.PI*2)/60000)*time.getMilliseconds());
+        ctx.translate(110, 0);
+
+        ctx.save();
+        ctx.rotate(((Math.PI*2)/6)*time.getSeconds() + ((Math.PI*2)/6000)*time.getMilliseconds());
+        ctx.translate(25,0);
+        ctx.drawImage(moon, -3.5,-3.5, 7,7);
+        ctx.restore();
+
+        ctx.drawImage(earth, -12,-12,24,24);
+        ctx.fillRect(0,-12,50,24);
+
+        ctx.restore();
+
+        ctx.restore();
+
+        window.requestAnimationFrame(draw);
+    }
+
+    init();
+
+</script>
+</body>
+</html>

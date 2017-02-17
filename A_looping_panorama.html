@@ -1,0 +1,40 @@
+<!doctype>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="300"></canvas>
+<script>
+    var canvas = document.getElementById('myCanvas'),
+            ctx = canvas.getContext('2d'),
+            cWidth = canvas.width,
+            cHeight = canvas.height,
+            img = new Image(),
+            playCount = 0;
+    var imgW;
+    var speed = 16;
+    img.src = "https://mdn.mozillademos.org/files/4553/Capitan_Meadows,_Yosemite_National_Park.jpg";
+
+    img.onload = function(){
+
+        imgW = img.width;
+        setInterval(draw, speed);
+    }
+
+    function draw(){
+        playCount++;
+        if(playCount >= imgW){
+            playCount = 0;
+        }
+        ctx.drawImage(img, playCount, 0);
+        ctx.drawImage(img, playCount-1024, 0);
+    }
+//not optimized yet
+</script>
+</body>
+</html>
