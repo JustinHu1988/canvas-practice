@@ -1,0 +1,150 @@
+<!doctype>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <input type="button" value='click to shoot' id="shootButton">
+<script>
+    var canvas = document.getElementById('myCanvas'),
+    	shootButton = document.getElementById('shootButton'),
+            ctx = canvas.getContext('2d'),
+            cWidth = canvas.width,
+            cHeight = canvas.height,
+            pathBox = [],
+            startPoint = {x: 0, y: 0},
+            endPoint = {x:0, y:0},
+            playing;
+
+var ball = {
+	radius: 15,
+	x: 200,
+	y: 100,
+	vx: 0,
+	vy: 5,
+	color: '#A64B00' ,
+	draw (){
+		ctx.save();
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, true);
+		ctx.closePath();
+		ctx.fillStyle=this.color;
+		ctx.fill();
+		ctx.restore();
+	}
+};
+var basketry = {
+	width: 10,
+	height: 120,
+	x:40,
+	y:200,
+	color: '#06266F',
+	status: 'notshoot',
+	addPath(){
+		pathBox.push({
+			type: 'rect',
+			width: this.width,
+			height: this.height,
+			x: this.x,
+			y: this.y
+		});
+	},
+	draw (){
+		ctx.save();
+		ctx.beginPath();
+		ctx.fillStyle = this.color;
+		ctx.fillRect(this.x,this.y,this.width,this.height);
+		ctx.restore();
+	}
+
+}
+function drawPic(){
+	ball.draw();
+	basketry.draw();
+}
+function ballMove(){
+	ctx.clearRect(0,0,cWidth,cHeight);
+	drawPic();
+	
+	
+
+	ball.x += ball.vx;
+	if(ball.y<cHeight-15){
+		ball.y += ball.vy;
+	}
+	if(ball.y+ball.vy+15 > cHeight || ball.y+ball.vy-15 <0){
+		ball.vy = -ball.vy;
+	}
+	if(ball.x+ball.vx+15 > cWidth || ball.x+ball.vx-15 <0){
+		ball.vx = -ball.vx;
+	}
+	ball.vx *= 0.99;
+	ball.vy *= 0.99;
+	ball.vy += 0.25;
+
+	playing = window.requestAnimationFrame(ballMove);
+}
+
+
+canvas.addEventListener('mousemove', function(e){
+	if(ball.status === 'wait'){
+		ctx.clearRect(0,0,cWidth,cHeight);
+		ball.x = e.clientX;
+		ball.y = e.clientY; 
+		drawPic();
+	}else if(ball.status === 'shooting'){
+		ctx.clearRect(0,0,cWidth,cHeight);
+		ball.x = e.clientX;
+		ball.y = e.clientY; 
+		
+		ctx.beginPath();
+		ctx.moveTo(startPoint.x, startPoint.y);
+		ctx.lineTo(ball.x,ball.y);
+		ctx.stroke();
+
+		drawPic();
+	}
+
+});
+canvas.addEventListener('mousedown', function(e){
+	if(ball.status === 'wait'){
+		ball.status = 'shooting';
+		ctx.clearRect(0,0,cWidth,cHeight);
+		ball.x = e.clientX;
+		ball.y = e.clientY;
+		startPoint.x = e.clientX;
+		startPoint.y = e.clientY; 
+		drawPic();
+	}
+});
+canvas.addEventListener('mouseup', function(e){
+	if(ball.status === 'shooting'){
+		ball.status = 'notshoot';
+		endPoint.x = e.clientX;
+		endPoint.y = e.clientY; 
+		ball.vx = -(endPoint.x-startPoint.x)/7;
+		ball.vy = -(endPoint.y-startPoint.y)/7;
+		ballMove();
+		setTimeout(function(){
+			shootButton.value = 'click to shoot again^^';
+		}, 1000);
+	}
+});
+shootButton.addEventListener('click', function(){
+	if(shootButton.value === 'click to shoot' || shootButton.value === 'click to shoot again^^'){
+		ball.status = 'wait';
+		shootButton.value = 'good luck!'
+		window.cancelAnimationFrame(playing);
+	}
+});
+
+drawPic();
+
+</script>
+</body>
+</html>
