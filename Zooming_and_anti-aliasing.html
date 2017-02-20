@@ -1,0 +1,33 @@
+<!doctype>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="400" height="300"></canvas>
+    <canvas id="yourCanvas" width="200" height="200"></canvas>
+<script>
+    var img = new Image();
+    var canvas1 = document.getElementById('myCanvas');
+    var ctx1 = canvas1.getContext('2d');
+    var canvas2 = document.getElementById('yourCanvas');
+    var ctx2 = canvas2.getContext('2d');
+    img.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+    img.onload = function(){
+        ctx1.drawImage(img, 0,0);
+        canvas1.addEventListener("mousemove",mouseMove);
+    };
+
+    function mouseMove(e){
+        ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+        ctx2.drawImage(canvas1, e.offsetX, e.offsetY,40,40, 0,0,200,200);
+    }
+
+
+</script>
+</body>
+</html>

@@ -94,13 +94,13 @@ function ballMove(){
 canvas.addEventListener('mousemove', function(e){
 	if(ball.status === 'wait'){
 		ctx.clearRect(0,0,cWidth,cHeight);
-		ball.x = e.clientX;
-		ball.y = e.clientY; 
+		ball.x = e.offsetX;
+		ball.y = e.offsetY; 
 		drawPic();
 	}else if(ball.status === 'shooting'){
 		ctx.clearRect(0,0,cWidth,cHeight);
-		ball.x = e.clientX;
-		ball.y = e.clientY; 
+		ball.x = e.offsetX;
+		ball.y = e.offsetY; 
 		
 		ctx.beginPath();
 		ctx.moveTo(startPoint.x, startPoint.y);
@@ -115,18 +115,18 @@ canvas.addEventListener('mousedown', function(e){
 	if(ball.status === 'wait'){
 		ball.status = 'shooting';
 		ctx.clearRect(0,0,cWidth,cHeight);
-		ball.x = e.clientX;
-		ball.y = e.clientY;
-		startPoint.x = e.clientX;
-		startPoint.y = e.clientY; 
+		ball.x = e.offsetX;
+		ball.y = e.offsetY;
+		startPoint.x = e.offsetX;
+		startPoint.y = e.offsetY; 
 		drawPic();
 	}
 });
 canvas.addEventListener('mouseup', function(e){
 	if(ball.status === 'shooting'){
 		ball.status = 'notshoot';
-		endPoint.x = e.clientX;
-		endPoint.y = e.clientY; 
+		endPoint.x = e.offsetX;
+		endPoint.y = e.offsetY; 
 		ball.vx = -(endPoint.x-startPoint.x)/7;
 		ball.vy = -(endPoint.y-startPoint.y)/7;
 		ballMove();

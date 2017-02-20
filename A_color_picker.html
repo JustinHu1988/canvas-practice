@@ -1,0 +1,35 @@
+<!doctype>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <div id="color"></div>
+<script>
+    var img = new Image();
+    img.src = 'rhino.png';
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    img.onload = function(){
+        ctx.drawImage(img, 0, 0);
+    };
+    var color = document.getElementById('color');
+    function pick(e){
+        var x = e.offsetX;
+        var y = e.offsetY;
+        var pixel = ctx.getImageData(x,y,1,1);
+        var rgba = 'rgba(' + pixel.data[0] + pixel.data[1] + pixel.data[2] + pixel.data[4]/255 + ')';
+        color.style.background = rgba;
+        color.innerHtml = rgba;
+    }
+
+    canvas.addEventListener('mousemove', pick);
+</script>
+</body>
+</html>
