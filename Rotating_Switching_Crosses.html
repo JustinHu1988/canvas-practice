@@ -1,0 +1,58 @@
+<!doctype>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rotating Switching Crosses</title>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+<script>
+//
+    window.requestAnimationFrame = window._requestAnimationFrame ||
+                    window.requestAnimationFrame ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame ||
+                    window.oRequestAnimationFrame ||
+                    window.msRequestAnimationFrame ||
+                    (function(){
+                    	//
+                        return function(callback, element){
+                            var lastTime = element.__lastTime;
+                            if(lastTime === undefined){
+                                lastTime = 0;
+                            }
+                            var currTime = Date.now();
+                            var timeToCall = Math.max(1, 33 - (currTime-lastTime));
+                            window.setTimeout(callback, timeToCall);
+                            element.__lastTime = currTime + timeToCall;
+                        }
+                    })();
+
+//
+    window.isDevice = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(((navigator.userAgent || navigator.vendor || window.opera)).toLowerCase()));
+
+let CrossMark = (function(){
+    function CrossMark(canvasElement){
+        if (typeof new.target !== "undefined"){
+            this.canvasEle = canvasElement;
+            this.ctx = this.canvasEle.getContext('2d');
+
+            // add listener for canvas resize
+            window.addEventListener("resize",function(){}, false);
+        } else{
+            throw new Error("You must use new with CrossMark~")
+        }
+    }
+
+})();
+
+
+
+
+
+</script>
+</body>
+</html>
