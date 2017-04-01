@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Float line 01</title>
+    <link rel="stylesheet" type="text/css" href="float-line-01.css">
+</head>
+<body>
+    <div class="wrap">
+        <canvas id="quadraticCurve"></canvas>
+        <div class="tool-box">
+            <button type="button">Add Point</button>
+            <ul id="point-list">
+                <h4>Point List</h4>
+                <li>
+                    <button class="delete-li">Delete Point</button>
+                </li>
+                <li><button class="delete-li">Delete Point</button></li>
+                <li><button class="delete-li">Delete Point</button></li>
+                <li><button class="delete-li">Delete Point</button></li>
+            </ul>
+        </div>
+    </div>
+
+<script>
+    var ctxFir = (function(){
+        var canvas = document.getElementById("quadraticCurve");
+        canvas.width = window.innerWidth - 24;
+        canvas.height = window.innerHeight - 240;
+        var ctxFir = canvas.getContext("2d");
+        return ctxFir;
+    })();
+    ctxFir.fillStyle = "#10e5d6";
+    ctxFir.lineWidth = 4;
+    ctxFir.strokeStyle = "#10e5d6";
+
+    var QCurveArr = (function(){
+        var QCurveArr = function(linePointCoords){
+            this.linePointCoords = linePointCoords || [];
+        };
+        QCurveArr.prototype.draw = function(){
+            var count = 0;
+            for(var i = 0; i<this.linePointCoords.length; i++){
+                if(i===0){
+                    ctxFir.beginPath();
+                    ctxFir.moveTo(this.linePointCoords[i].x,this.linePointCoords[i].y);
+                    ctxFir.shadowBlur= 15;
+                    ctxFir.lineCap = 'round';
+                    ctxFir.shadowColor = '#10e5d6';
+                }
+                ctxFir.quadraticCurveTo(800, 0, 900, 300);
+            }
+            ctxFir.stroke();
+        };
+        return QCurveArr;
+    })();
+
+    window.onresize = function(){
+        var canvas = document.getElementById("quadraticCurve");
+        canvas.width = window.innerWidth - 24;
+        canvas.height = window.innerHeight - 240;
+        mainDraw();
+    }
+
+
+
+    ctxFir.beginPath();
+    ctxFir.moveTo(50,20);
+    ctxFir.quadraticCurveTo(800, 0, 900, 300);
+    ctxFir.shadowBlur= 15;
+    ctxFir.lineCap = 'round';
+    ctxFir.shadowColor = '#10e5d6';
+    ctxFir.stroke();
+
+
+
+
+</script>
+</body>
+</html>
