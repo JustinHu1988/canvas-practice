@@ -12,7 +12,7 @@
     <div class="wrap">
         <canvas id="quadraticCurve"></canvas>
         <div class="tool-box">
-            <button type="button">Add Point</button>
+            <button id="add-point" type="button">Click to Add Point</button>
             <ul id="point-list">
                 <h4>Point List</h4>
                 <li>
@@ -26,56 +26,147 @@
     </div>
 
 <script>
-    var ctxFir = (function(){
-        var canvas = document.getElementById("quadraticCurve");
+(function(){
+    var canvas = document.getElementById("quadraticCurve");
+    canvas.width = window.innerWidth - 24;
+    canvas.height = window.innerHeight - 240;
+    var ctxFir = canvas.getContext("2d");
+
+    var addPB = document.getElementById("add-point");
+    var addEndPoint = false;
+    var addQuaPoint = false;
+
+
+    canvas.addEventListener('mousemove', function(e){
+        if(addEndPoint === true){
+            mainDraw();
+            drawPoint(e);
+            console.log(e.clientX, e.clientY, e.offsetX, e.offsetY);
+        }else if(addQuaPoint === true){
+
+        }
+
+    });
+
+    canvas.addEventListener('click', function(e){
+        if(addEndPoint === true){
+
+            addPB.textContent = "Please add quadraticCurve point";
+            lineArray[lineArray.length-1].addPoints(e);
+            addEndPoint = false;
+            addQuaPoint = true;
+        }else if(addQuaPoint === true){
+
+            addPB.textContent = "Click to Add Point";
+            lineArray[lineArray.length-1].addPoints(e);
+            mainDraw();
+            addQuaPoint = false;
+        }
+    });
+
+
+
+
+    // resize event
+    window.onresize = function(){
         canvas.width = window.innerWidth - 24;
         canvas.height = window.innerHeight - 240;
-        var ctxFir = canvas.getContext("2d");
-        return ctxFir;
-    })();
+    }
+
+    // add point event
+    addPB.addEventListener("click", function(){
+        if(this.textContent === "Click to Add Point"){
+            addEndPoint = true;
+            addPB.textContent = "Please add end point";
+        }
+    });
+
+
     ctxFir.fillStyle = "#10e5d6";
-    ctxFir.lineWidth = 4;
+    ctxFir.lineWidth = 1;
     ctxFir.strokeStyle = "#10e5d6";
 
-    var QCurveArr = (function(){
+
+    var lineArray = [];
+    var QCurveArr = (function(linePointCoords){
         var QCurveArr = function(linePointCoords){
-            this.linePointCoords = linePointCoords || [];
+            this.linePointCoords = [];
+            this.linePointCoords.push(linePointCoords);
+            this.pointArr = [];
+            this.index = lineArray.length-1;
         };
+
         QCurveArr.prototype.draw = function(){
             var count = 0;
+            ctxFir.beginPath();
             for(var i = 0; i<this.linePointCoords.length; i++){
+                ctxFir.shadowBlur= 15;
+                ctxFir.lineCap = 'round';
+                ctxFir.shadowColor = '#10e5d6';
                 if(i===0){
                     ctxFir.beginPath();
                     ctxFir.moveTo(this.linePointCoords[i].x,this.linePointCoords[i].y);
-                    ctxFir.shadowBlur= 15;
-                    ctxFir.lineCap = 'round';
-                    ctxFir.shadowColor = '#10e5d6';
+                }else{
+                    ctxFir.quadraticCurveTo(this.linePointCoords[i].endPoint.x, this.linePointCoords[i].endPoint.y, this.linePointCoords[i].quaPoint.x, this.linePointCoords[i].quaPoint.y);
                 }
-                ctxFir.quadraticCurveTo(800, 0, 900, 300);
             }
             ctxFir.stroke();
+            console.log(this.linePointCoords,this.linePointCoords.length);
         };
+
+        QCurveArr.prototype.addPoints = function(coord){
+            if(addEndPoint === true){
+                this.linePointCoords.push({endPoint : {x: coord.offsetX, y: coord.offsetY}});
+            }else if(addQuaPoint === true){
+                console.log(this.linePointCoords);
+                this.linePointCoords[this.linePointCoords.length-1].quaPoint = {x: coord.offsetX, y: coord.offsetY};
+            }
+        };
+
+        QCurveArr.prototype.drawPoint = function(coord){
+            drawPoint(coord);
+            this.pointArr.push();
+        };
+
+
         return QCurveArr;
     })();
 
-    window.onresize = function(){
-        var canvas = document.getElementById("quadraticCurve");
-        canvas.width = window.innerWidth - 24;
-        canvas.height = window.innerHeight - 240;
-        mainDraw();
+    function drawPoint(coord){
+        ctxFir.save();
+        ctxFir.beginPath();
+        ctxFir.translate(coord.offsetX, coord.offsetY);
+        ctxFir.fillStyle = "rgba(69,105,214,1)";
+        ctxFir.strokeStyle = "rgba(69,105,214,1)";
+        ctxFir.fillRect(-3, -3, 6, 6);
+        ctxFir.arc(0,0,10,0, 2*Math.PI, false);
+        ctxFir.stroke();
+        ctxFir.fillText(coord.offsetX+ "," +coord.offsetY, 12,12);
+        ctxFir.restore();
     }
+
+    lineArray.push(new QCurveArr({x:100,y:100}));
+
+
+
+    var mainDraw = function(){
+        ctxFir.clearRect(0,0,canvas.width, canvas.height);
+        for(var i = 0; i < lineArray.length; i++){
+            lineArray[i].draw();
+        }
+    };
 
 
 
     ctxFir.beginPath();
     ctxFir.moveTo(50,20);
     ctxFir.quadraticCurveTo(800, 0, 900, 300);
-    ctxFir.shadowBlur= 15;
     ctxFir.lineCap = 'round';
     ctxFir.shadowColor = '#10e5d6';
     ctxFir.stroke();
 
 
+})();
 
 
 </script>
