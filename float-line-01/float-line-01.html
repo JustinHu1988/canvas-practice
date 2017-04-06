@@ -35,7 +35,7 @@
     var addPB = document.getElementById("add-point");
     var addEndPoint = false;
     var addQuaPoint = false;
-
+    var pointMove = false;
 
     canvas.addEventListener('mousemove', function(e){
         if(addEndPoint === true){
@@ -64,6 +64,38 @@
         }
     });
 
+
+    canvas.addEventListener('mousedown', function(e){
+        if(addEndPoint === false && addQuaPoint === false){
+            for(var i = 1; i<lineArray[lineArray.length-1].linePointCoords.length; i++){
+                console.log(lineArray[lineArray.length-1]);
+                if(Math.sqrt(Math.pow((e.offsetX-lineArray[lineArray.length-1].linePointCoords[i].endPoint.x), 2) + Math.pow((e.offsetY-lineArray[lineArray.length-1].linePointCoords[i].endPoint.y), 2))<10){
+                    pointMove = {status: true, point: i, kind: 'end'};
+                }else if(Math.sqrt(Math.pow((e.offsetX-lineArray[lineArray.length-1].linePointCoords[i].quaPoint.x), 2) + Math.pow((e.offsetX-lineArray[lineArray.length-1].linePointCoords[i].quaPoint.x), 2))<10){
+                    pointMove = {status: true, point: i, kind: 'qua'};
+                }
+            }
+            console.log(pointMove);
+        }
+    });
+
+    canvas.addEventListener('mousemove', function(e){
+        if(pointMove !== undefined){
+            if(pointMove.kind === 'end'){
+                lineArray[lineArray.length-1].linePointCoords[pointMove.point].endPoint.x = e.offsetX;
+                lineArray[lineArray.length-1].linePointCoords[pointMove.point].endPoint.y = e.offsetY;
+                mainDraw();
+            }else if(pointMove.kind === 'qua'){
+                lineArray[lineArray.length-1].linePointCoords[pointMove.point].quaPoint.x = e.offsetX;
+                lineArray[lineArray.length-1].linePointCoords[pointMove.point].quaPoint.y = e.offsetY;
+                mainDraw();
+            }
+        }
+    });
+
+    canvas.addEventListener('mouseup', function(e){
+        pointMove = undefined;
+    });
 
 
 
@@ -103,6 +135,9 @@
                 ctxFir.shadowBlur= 15;
                 ctxFir.lineCap = 'round';
                 ctxFir.shadowColor = '#10e5d6';
+
+
+
                 if(i===0){
                     ctxFir.beginPath();
                     ctxFir.moveTo(this.linePointCoords[i].x,this.linePointCoords[i].y);
@@ -111,6 +146,11 @@
                 }
             }
             ctxFir.stroke();
+            for(var i = 0; i<this.linePointCoords.length; i++){
+                drawPoints(this.linePointCoords[i].endPoint);
+                drawPoints(this.linePointCoords[i].quaPoint);
+            }
+
             console.log(this.linePointCoords,this.linePointCoords.length);
         };
 
@@ -143,6 +183,21 @@
         ctxFir.stroke();
         ctxFir.fillText(coord.offsetX+ "," +coord.offsetY, 12,12);
         ctxFir.restore();
+    }
+
+    function drawPoints(coord){
+        if(coord){
+            ctxFir.save();
+            ctxFir.beginPath();
+            ctxFir.translate(coord.x, coord.y);
+            ctxFir.fillStyle = "rgba(69,105,214,1)";
+            ctxFir.strokeStyle = "rgba(69,105,214,1)";
+            ctxFir.fillRect(-3, -3, 6, 6);
+            ctxFir.arc(0,0,10,0, 2*Math.PI, false);
+            ctxFir.stroke();
+            ctxFir.fillText(coord.x+ "," +coord.y, 12, 12);
+            ctxFir.restore();
+        }
     }
 
     lineArray.push(new QCurveArr({x:100,y:100}));
